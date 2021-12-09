@@ -1,0 +1,37 @@
+{
+	"name": "datasetproductcategory",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "ProductCategory.csv",
+				"container": "datafactorydata"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "ProductCategoryID",
+				"type": "String"
+			},
+			{
+				"name": "ParentProductCategoryID",
+				"type": "String"
+			},
+			{
+				"name": "Name",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

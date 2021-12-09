@@ -1,0 +1,39 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DelimitedText3",
+						"type": "DatasetReference"
+					},
+					"name": "source3"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SinkDataSet",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Join1"
+				}
+			],
+			"script": "source(output(\n\t\tProductID as string,\n\t\tName as string,\n\t\tProductNumber as string,\n\t\tColor as string,\n\t\tStandardCost as string,\n\t\tListPrice as string,\n\t\tSize as string,\n\t\tWeight as string,\n\t\tProductCategoryID as string,\n\t\tProductModelID as string,\n\t\tSellStartDate as string,\n\t\tSellEndDate as string,\n\t\tModifiedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource(output(\n\t\tProductCategoryID as string,\n\t\tParentProductCategoryID as string,\n\t\tName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source3\nsource1, source3 join(source1@ProductCategoryID == source3@ProductCategoryID,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> Join1\nJoin1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\tProductID,\n\t\tName = source1@Name,\n\t\tProductNumber,\n\t\tColor,\n\t\tStandardCost,\n\t\tListPrice,\n\t\tSize,\n\t\tWeight,\n\t\tProductCategoryID = source1@ProductCategoryID,\n\t\tProductModelID,\n\t\tSellStartDate,\n\t\tSellEndDate,\n\t\tModifiedDate,\n\t\tProductCategoryID = source3@ProductCategoryID,\n\t\tParentProductCategoryID,\n\t\tProductCategoryName = source3@Name\n\t)) ~> sink1"
+		}
+	}
+}
